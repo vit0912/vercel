@@ -3100,7 +3100,17 @@ localStorage.setItem("kidMode", document.getElementById("kidMode").checked);
 function next(){index=(index+1)%filtered.length;render()}
 function prev(){index=(index-1+filtered.length)%filtered.length;render()}
 function shuffle(){filtered.sort(()=>Math.random()-.5);index=0;render()}
-function toggleStar(){const w=filtered[index];learned[w.w]=!learned[w.w];localStorage.setItem("learned",JSON.stringify(learned));render()}
+  
+function toggleStar(){
+  const w=filtered[index];
+  if (learned[w.w]) {
+  delete learned[w.w];
+} else {
+  learned[w.w] = true;
+};
+  localStorage.setItem("learned",JSON.stringify(learned));
+  render()}
+  
 function speak(){const u=new SpeechSynthesisUtterance(filtered[index].w);u.lang="en-US";speechSynthesis.speak(u)}
 levelFilter.onchange = e => {
   localStorage.setItem("currentLevel", e.target.value);
@@ -3126,5 +3136,6 @@ render();
 </script>
 </body>
 </html>
+
 
 
