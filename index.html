@@ -3091,14 +3091,10 @@ function render(){
  document.querySelector(".star").innerText=learned[w.w]?"⭐":"☆";
  stats.innerText=`Learned: ${Object.keys(learned).length} / ${words.length}`;
 
-  levelFilter.value = savedLevel;
-document.getElementById("kidMode").checked = savedKidMode;
+localStorage.setItem("currentIndex", index);
+localStorage.setItem("currentLevel", levelFilter.value);
+localStorage.setItem("kidMode", document.getElementById("kidMode").checked);
 
-if (savedLevel !== "all") {
-  filtered = words.filter(w => w.level === savedLevel);
-}
-
-if (index >= filtered.length) index = 0;
 
 }
 function next(){index=(index+1)%filtered.length;render()}
@@ -3130,4 +3126,5 @@ render();
 </script>
 </body>
 </html>
+
 
