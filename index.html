@@ -3061,7 +3061,23 @@ const WORDS = [
 ];
 /* ==== WORD DATA END ==== */
 
-let words=WORDS,filtered=[...words],index=0;
+let savedIndex = parseInt(localStorage.getItem("currentIndex") || "0");
+let savedLevel = localStorage.getItem("currentLevel") || "all";
+let savedKidMode = localStorage.getItem("kidMode") === "true";
+
+let words = WORDS;
+let filtered = [...words];
+let index = savedIndex;
+
+levelFilter.value = savedLevel;
+document.getElementById("kidMode").checked = savedKidMode;
+
+if (savedLevel !== "all") {
+  filtered = words.filter(w => w.level === savedLevel);
+}
+
+if (index >= filtered.length) index = 0;
+
 let learned=JSON.parse(localStorage.getItem("learned")||"{}");
 
 function render(){
@@ -3074,13 +3090,31 @@ function render(){
  example.innerText=kid?"":w.ex;
  document.querySelector(".star").innerText=learned[w.w]?"⭐":"☆";
  stats.innerText=`Learned: ${Object.keys(learned).length} / ${words.length}`;
+
+  levelFilter.value = savedLevel;
+document.getElementById("kidMode").checked = savedKidMode;
+
+if (savedLevel !== "all") {
+  filtered = words.filter(w => w.level === savedLevel);
+}
+
+if (index >= filtered.length) index = 0;
+
 }
 function next(){index=(index+1)%filtered.length;render()}
 function prev(){index=(index-1+filtered.length)%filtered.length;render()}
 function shuffle(){filtered.sort(()=>Math.random()-.5);index=0;render()}
 function toggleStar(){const w=filtered[index];learned[w.w]=!learned[w.w];localStorage.setItem("learned",JSON.stringify(learned));render()}
 function speak(){const u=new SpeechSynthesisUtterance(filtered[index].w);u.lang="en-US";speechSynthesis.speak(u)}
-levelFilter.onchange=e=>{filtered=e.target.value==="all"?words:words.filter(x=>x.level===e.target.value);index=0;render()}
+levelFilter.onchange = e => {
+  localStorage.setItem("currentLevel", e.target.value);
+  filtered = e.target.value === "all"
+    ? words
+    : words.filter(x => x.level === e.target.value);
+  index = 0;
+  render();
+};
+
 function startQuiz(){
  quiz.classList.remove("hidden");
  const c=filtered[index];let o=[c];
@@ -3096,3 +3130,4 @@ render();
 </script>
 </body>
 </html>
+
